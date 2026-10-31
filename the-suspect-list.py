@@ -9,7 +9,7 @@ BASE_URL = os.getenv("URL")
 ENDPOINT = "/stage/1"
 
 URL = f"{BASE_URL.rstrip("/")}/{ENDPOINT.lstrip("/")}"
-
+print (URL)
 
 HEADER = {
     "X-Student-ID": "student_shayan-r"
@@ -25,6 +25,10 @@ response = requests.get(
 
 print("Status Code:", response.status_code)
 print("Response:")
+print(type(response))
+print(type(response.json()))
+print(type(response.text))
+
 
 try:
     print(response.json())

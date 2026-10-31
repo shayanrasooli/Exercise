@@ -35,8 +35,8 @@ except requests.exceptions.RequestException as error:
 
 data = response.json()
 
-print (len(data["messages"]))
-print (data["messages"][1])
+# print (len(data["messages"]))
+# print (data["messages"][1])
 
 for message in data["messages"]:
     if "TRANSMISSION-VALID" in message:

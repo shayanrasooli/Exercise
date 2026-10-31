@@ -1,0 +1,51 @@
+{
+  "courses": [
+    {
+      "code": "PY101",
+      "title": "Python Basics",
+      "price": 100,
+      "pass_score": 60,
+      "prerequisites": []
+    },
+    {
+      "code": "PY201",
+      "title": "Python Advanced",
+      "price": 150,
+      "pass_score": 70,
+      "prerequisites": [
+        "PY101"
+      ]
+    },
+    {
+      "code": "DB101",
+      "title": "SQL Fundamentals",
+      "price": 120,
+      "pass_score": 65,
+      "prerequisites": []
+    },
+    {
+      "code": "API101",
+      "title": "API Development",
+      "price": 180,
+      "pass_score": 70,
+      "prerequisites": [
+        "PY201",
+        "DB101"
+      ]
+    },
+    {
+      "code": "GIT101",
+      "title": "Git Essentials",
+      "price": 80,
+      "pass_score": 60,
+      "prerequisites": []
+    },
+    {
+      "code": "SEC101",
+      "title": "Cybersecurity Basics",
+      "price": 90,
+      "pass_score": 65,
+      "prerequisites": []
+    }
+  ]
+}

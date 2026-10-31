@@ -1,0 +1,14 @@
+{
+  "students": [
+    {"id": "S001", "name": "Ali", "active": true, "city": "Berlin"},
+    {"id": "S002", "name": "Sara", "active": true, "city": "Hamburg"},
+    {"id": "S003", "name": "Reza", "active": true, "city": "Berlin"},
+    {"id": "S004", "name": "Mina", "active": true, "city": "Munich"},
+    {"id": "S005", "name": "Nima", "active": true, "city": "Berlin"},
+    {"id": "S006", "name": "Tara", "active": false, "city": "Bonn"},
+    {"id": "S007", "name": "Omid", "active": true, "city": "Cologne"},
+    {"id": "S008", "name": "Leila", "active": true, "city": "Hamburg"},
+    {"id": "S009", "name": "Kian", "active": true, "city": "Munich"},
+    {"id": "S010", "name": "Ava", "active": true, "city": "Berlin"}
+  ]
+}

@@ -19,7 +19,7 @@ VALID_PAYMENT_STATUS = "SUCCESS"
 
 
 def load_json(filename, key):
-    """یک فایل JSON را بخوانید و مقدار کلید اصلی آن را برگردانید."""
+    #get the file name and return the value for each key you want
     file_path = BASE_DIR / filename
     with file_path.open("r", encoding="utf-8") as file:
         data = json.load(file)
@@ -28,10 +28,10 @@ def load_json(filename, key):
 
 
 def main():
-    students = load_json("students.json", "students")
-    courses = load_json("courses.json", "courses")
-    enrollment_rows = load_json("enrollments.json", "enrollments")
-    transactions = load_json("payments.json", "transactions")
+    students = load_json("students.json", "students") #it will be a list
+    courses = load_json("courses.json", "courses")        #it will be a list
+    enrollment_rows = load_json("enrollments.json", "enrollments")        #it will be a list
+    transactions = load_json("payments.json", "transactions")          #it will be a list
 
     # ------------------------------------------------------------
     # مرحله اول: ساخت نمایه‌ها و اعتبارسنجی ثبت‌نام‌ها
@@ -43,12 +43,12 @@ def main():
         # اطلاعات هر دانش‌آموز باید با شناسه‌اش قابل دسترسی باشد.
         # دلیل: در هر رکورد ثبت‌نام فقط student_id داریم و نباید هر بار
         # برای پیدا کردن دانش‌آموز، کل فهرست را از ابتدا جست‌وجو کنیم.
-        students_by_id[_____] = student
+        students_by_id[student["id"]] = student
 
     # نمایه دوره‌ها؛ کلید دیکشنری کد دوره است.
     # مجموعه کدها برای بررسی سریع معتبر بودن دوره استفاده می‌شود.
     courses_by_code = {course["code"]: course for course in courses}
-    available_course_codes = set(courses_by_code)
+    available_course_codes = set(courses_by_code)  #create a set with only keys (course codes)
 
     active_students = []
     for student in students:
@@ -72,29 +72,28 @@ def main():
         # دانش‌آموز را با استفاده از نمایه ساخته‌شده پیدا کنید.
         # دلیل: ممکن است شناسه در فایل وجود نداشته باشد؛ در این حالت
         # برنامه نباید با KeyError متوقف شود.
-        student = students_by_id._____(student_id)
+        student = students_by_id.get(student_id)
 
         # TODO 3:
         # رکورد دانش‌آموز ناشناخته یا غیرفعال را نپذیرید.
         # دلیل: ثبت‌نام فقط برای دانش‌آموز فعال و شناخته‌شده معتبر است.
-        if _____:
+        if student_id not in list(students_by_id.keys()):
             ignored_enrollment_count += 1
             continue
 
         # TODO 4:
         # کد دوره را قبل از مقایسه استاندارد کنید.
         # دلیل: " py101 " و "PY101" باید یک کد در نظر گرفته شوند.
-        course_code = row["course_code"]._____()._____
+        course_code = row["course_code"].strip().upper()
 
         # TODO 5:
         # وضعیت ثبت‌نام را نیز استاندارد کنید.
         # دلیل: فاصله و بزرگی/کوچکی حروف نباید باعث رد رکورد معتبر شود.
-        status = row["status"]._____()._____
-
+        status = row["status"].strip().upper()
         # TODO 6:
         # فقط دوره‌های موجود در کاتالوگ و وضعیت‌های مجاز را نگه دارید.
         # دلیل: دوره ناشناخته یا ثبت‌نام لغوشده نباید وارد گزارش شود.
-        if _____ or status not in VALID_ENROLLMENT_STATUSES:
+        if course_code not in list(courses_by_code.keys()) or status not in VALID_ENROLLMENT_STATUSES:
             ignored_enrollment_count += 1
             continue
 
@@ -103,62 +102,68 @@ def main():
         # TODO 7:
         # نمره باید یا None باشد یا عددی بین 0 تا 100.
         # دلیل: داده خراب نباید میانگین دوره یا تصمیم گواهی را خراب کند.
-        if score is not None and (_____):
+        if score is not None or (score not in range(101)):
             ignored_enrollment_count += 1
             continue
 
         # TODO 8:
         # ثبت‌نام تکمیل‌شده حتماً باید نمره داشته باشد.
         # دلیل: بدون نمره نمی‌توان قبولی یا عدم قبولی را تعیین کرد.
-        if status == "COMPLETED" and _____:
+        if status == "COMPLETED" and (score not in range(101)):
             ignored_enrollment_count += 1
             continue
 
         # TODO 9:
         # یک کلید مرکب بسازید که ترکیب دانش‌آموز و دوره را مشخص کند.
         # دلیل: هر دانش‌آموز فقط یک ثبت‌نام معتبر برای هر دوره دارد.
-        enrollment_key = _____
+        enrollment_key = (row["student_id"],course_code)
 
         # TODO 10:
         # اگر این ترکیب قبلاً دیده شده، رکورد تکراری را رد کنید.
         # دلیل: یک ثبت‌نام نباید در آمار دوره دو بار شمرده شود.
-        if enrollment_key in _____:
+        if enrollment_key in seen_enrollment_keys:
             ignored_enrollment_count += 1
             continue
 
         # TODO 11:
         # ترکیب معتبر را برای تشخیص تکرارهای بعدی ذخیره کنید.
         # دلیل: Set برای نگهداری کلیدهای مرکب یکتا مناسب است.
-        seen_enrollment_keys._____(enrollment_key)
+        seen_enrollment_keys.add(enrollment_key)
 
         # TODO 12:
         # یک دیکشنری تازه بسازید؛ اطلاعات اصلی را نگه دارید، اما
         # course_code و status استانداردشده را جایگزین کنید.
         # دلیل: ** دیکشنری را باز می‌کند و کلیدهای بعدی مقدار قبلی را می‌پوشانند.
-        clean_row = {_____, "course_code": course_code, "status": status}
+        clean_row = {
+            "enrollment_id": row["enrollment-id"],
+            "student_id":row["student_id"],
+            "course_code": course_code,
+            "status": status,
+            "score":row["score"]
+            }
         clean_enrollments.append(clean_row)
         enrollments_by_key[enrollment_key] = clean_row
 
         # TODO 13:
         # دانش‌آموز را در گروه همان دوره قرار دهید.
         # دلیل: هر دوره باید فهرست جداگانه‌ای از دانش‌آموزان داشته باشد.
-        students_by_course._____(course_code, [])._____(student["name"])
+        students_by_course.setdefault(course_code, []).append(student["name"])
 
         # TODO 14:
         # تعداد ثبت‌نام‌های یکتای دوره را افزایش دهید.
         # دلیل: ممکن است کلید دوره هنوز در دیکشنری شمارش وجود نداشته باشد.
-        course_counts[course_code] = course_counts._____(course_code, 0) + 1
+        course_counts[course_code] = course_counts.get(course_code, 0) + 1
 
         if score is not None:
             # TODO 15:
             # نمره را به فهرست نمره‌های همان دوره اضافه کنید.
             # دلیل: در مرحله گزارش باید میانگین نمره هر دوره محاسبه شود.
-            scores_by_course._____(course_code, [])._____(score)
+            scores_by_course.setdefault(course_code, []).append(score)
 
         # TODO 16:
         # دوره دارای ثبت‌نام معتبر را به مجموعه دوره‌های استفاده‌شده اضافه کنید.
         # دلیل: بعداً با تفاضل Setها دوره‌های بدون ثبت‌نام را پیدا می‌کنیم.
-        courses_with_enrollments._____(course_code)
+        courses_with_enrollments.add(course_code)
 
     # ------------------------------------------------------------
     # مرحله دوم: محاسبه پرداخت خالص هر ثبت‌نام
@@ -174,10 +179,10 @@ def main():
         # TODO 17:
         # هر شناسه تراکنش را فقط یک بار پردازش کنید.
         # دلیل: ممکن است یک رکورد پرداخت به دلیل خطای خروجی چند بار تکرار شده باشد.
-        if transaction_id in _____:
+        if transaction_id in seen_transaction_ids:
             ignored_transaction_count += 1
             continue
-        seen_transaction_ids._____(transaction_id)
+        seen_transaction_ids.add(transaction_id)
 
         transaction_type = transaction["type"].strip().upper()
         transaction_status = transaction["status"].strip().upper()
@@ -187,19 +192,19 @@ def main():
         # TODO 18:
         # از Tuple به‌عنوان کلید مرکب پرداخت استفاده کنید.
         # دلیل: مبلغ باید برای هر ترکیب دانش‌آموز و دوره جداگانه محاسبه شود.
-        payment_key = _____
+        payment_key = (transaction["student_id"],transaction["course_code"])
 
         # TODO 19:
         # پرداختی را نپذیرید که برای ثبت‌نام معتبر وجود ندارد.
         # دلیل: پرداخت یک دوره ناشناخته یا ثبت‌نام‌نشده نباید وارد گزارش شود.
-        if payment_key not in _____:
+        if payment_key not in enrollments_by_key:
             ignored_transaction_count += 1
             continue
 
         # TODO 20:
         # فقط تراکنش موفق از نوع پرداخت یا برگشت وجه معتبر است.
         # دلیل: تراکنش ناموفق یا نوع ناشناخته نباید روی مانده اثر بگذارد.
-        if _____ or transaction_type not in VALID_PAYMENT_TYPES:
+        if transaction_status not in VALID_PAYMENT_STATUS or transaction_type not in VALID_PAYMENT_TYPES:
             ignored_transaction_count += 1
             continue
 
@@ -208,7 +213,7 @@ def main():
         # TODO 21:
         # مبلغ باید عددی و بزرگ‌تر از صفر باشد.
         # دلیل: مبلغ منفی یا متن، ورودی مالی معتبری نیست.
-        if _____:
+        if amount <= 0:
             ignored_transaction_count += 1
             continue
 
@@ -218,9 +223,9 @@ def main():
         # PAYMENT مبلغ را اضافه می‌کند؛ REFUND از مبلغ خالص کم می‌کند.
         # دلیل: برای تشخیص تسویه کامل باید پرداخت‌ها و برگشت وجه‌ها را با هم حساب کرد.
         if transaction_type == "PAYMENT":
-            net_paid_by_enrollment[payment_key] = _____
+            net_paid_by_enrollment[payment_key] = current_total + amount
         else:
-            net_paid_by_enrollment[payment_key] = _____
+            net_paid_by_enrollment[payment_key] = current_total - amount
 
     # جمع مبلغ خالص به تفکیک دوره
     revenue_by_course = {}
@@ -228,7 +233,7 @@ def main():
         # TODO 23:
         # دو بخش کلید Tuple را در دو متغیر جدا قرار دهید.
         # دلیل: بخش دوم کلید، کد دوره‌ای است که باید درآمد به آن نسبت داده شود.
-        student_id, course_code = _____
+        student_id, course_code = payment_key
         revenue_by_course[course_code] = revenue_by_course.get(course_code, 0) + net_amount
 
     # ------------------------------------------------------------
@@ -245,7 +250,7 @@ def main():
         # TODO 24:
         # فقط ثبت‌نام‌هایی را نگه دارید که هنوز مبلغی بدهکارند.
         # دلیل: مدیر آموزشگاه باید بتواند پیگیری مالی را از روی گزارش انجام دهد.
-        if _____:
+        if balance > 0:
             student = students_by_id[enrollment["student_id"]]
             outstanding_balances.append({
                 "student": student["name"],
@@ -272,18 +277,18 @@ def main():
             # TODO 25:
             # اگر نمره کمتر از حد قبولی دوره است، گواهی صادر نشود.
             # دلیل: صرفاً ثبت‌نام یا حضور در دوره به معنی قبولی نیست.
-            if _____:
+            if enrollment["score"] < courses["pass_score"]:
                 continue
 
             # TODO 26:
             # پیش‌نیازهای دوره را به Set تبدیل کنید.
             # دلیل: برای بررسی عضویت تمام پیش‌نیازها از عملیات مجموعه‌ای استفاده می‌کنیم.
-            required_courses = _____
+            required_courses = set(courses["prerequisites"])
 
             # TODO 27:
             # گواهی فقط وقتی صادر شود که تمام پیش‌نیازها قبلاً تأیید شده باشند.
             # دلیل: قبولی در دوره پیشرفته بدون گذراندن پیش‌نیازها کافی نیست.
-            if not required_courses._____(certified_courses):
+            if not required_courses.issubset(certified_courses):
                 continue
 
             paid_amount = net_paid_by_enrollment.get(enrollment_key, 0)
@@ -291,13 +296,13 @@ def main():
             # TODO 28:
             # اگر پرداخت خالص کمتر از شهریه دوره است، گواهی صادر نشود.
             # دلیل: صدور گواهی علاوه بر قبولی، به تسویه مالی هم وابسته است.
-            if _____:
+            if paid_amount < course["price"]:
                 continue
 
             # TODO 29:
             # کد دوره تأییدشده را به Set گواهی‌های دانش‌آموز اضافه کنید.
             # دلیل: دوره‌های تأییدشده باید یکتا باشند تا پیش‌نیاز دوره بعدی شوند.
-            certified_courses._____(course_code)
+            certified_courses.add(course_code)
 
             certificates.append({
                 "student_id": student["id"],
@@ -315,7 +320,7 @@ def main():
     # TODO 30:
     # دوره‌های ارائه‌شده‌ای را پیدا کنید که ثبت‌نام معتبر ندارند.
     # دلیل: تفاضل Setها این مسئله را بدون حلقه تو در تو حل می‌کند.
-    courses_without_enrollments = _____ - _____
+    courses_without_enrollments = course_code - certified_courses
 
     course_reports = []
     for course in courses:
@@ -328,7 +333,7 @@ def main():
         # TODO 31:
         # اطلاعات آماری را یک‌جا به دیکشنری گزارش اضافه کنید.
         # دلیل: update برای افزودن/به‌روزرسانی چند کلید در یک مرحله مناسب است.
-        report_row._____(
+        report_row.update(
             {
                 "registered_students": course_counts.get(code, 0),
                 "average_score": average_score,

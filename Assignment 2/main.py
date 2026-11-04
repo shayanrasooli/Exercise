@@ -102,7 +102,7 @@ def main():
         # TODO 7:
         # نمره باید یا None باشد یا عددی بین 0 تا 100.
         # دلیل: داده خراب نباید میانگین دوره یا تصمیم گواهی را خراب کند.
-        if score is not None or (score not in range(101)):
+        if score is not None and (score not in range(101)):
             ignored_enrollment_count += 1
             continue
 
@@ -135,7 +135,7 @@ def main():
         # course_code و status استانداردشده را جایگزین کنید.
         # دلیل: ** دیکشنری را باز می‌کند و کلیدهای بعدی مقدار قبلی را می‌پوشانند.
         clean_row = {
-            "enrollment_id": row["enrollment-id"],
+            "enrollment_id": row["enrollment_id"],
             "student_id":row["student_id"],
             "course_code": course_code,
             "status": status,
@@ -277,13 +277,13 @@ def main():
             # TODO 25:
             # اگر نمره کمتر از حد قبولی دوره است، گواهی صادر نشود.
             # دلیل: صرفاً ثبت‌نام یا حضور در دوره به معنی قبولی نیست.
-            if enrollment["score"] < courses["pass_score"]:
+            if enrollment["score"] < course["pass_score"]:
                 continue
 
             # TODO 26:
             # پیش‌نیازهای دوره را به Set تبدیل کنید.
             # دلیل: برای بررسی عضویت تمام پیش‌نیازها از عملیات مجموعه‌ای استفاده می‌کنیم.
-            required_courses = set(courses["prerequisites"])
+            required_courses = set(course["prerequisites"])
 
             # TODO 27:
             # گواهی فقط وقتی صادر شود که تمام پیش‌نیازها قبلاً تأیید شده باشند.
@@ -313,6 +313,7 @@ def main():
 
         certificates_by_student[student["id"]] = certified_courses
 
+
     # ------------------------------------------------------------
     # مرحله چهارم: ساخت گزارش نهایی
     # ------------------------------------------------------------
@@ -320,7 +321,7 @@ def main():
     # TODO 30:
     # دوره‌های ارائه‌شده‌ای را پیدا کنید که ثبت‌نام معتبر ندارند.
     # دلیل: تفاضل Setها این مسئله را بدون حلقه تو در تو حل می‌کند.
-    courses_without_enrollments = course_code - certified_courses
+    courses_without_enrollments = set(courses_by_code.keys()) - certified_courses
 
     course_reports = []
     for course in courses:

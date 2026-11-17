@@ -9,13 +9,13 @@
         "id": 2,
         "title": "Practice Python dictionaries",
         "priority": "Medium",
-        "done": false
+        "done": true
     },
     {
         "id": 3,
         "title": "Complete Python assignment",
         "priority": "High",
-        "done": false
+        "done": true
     },
     {
         "id": 4,

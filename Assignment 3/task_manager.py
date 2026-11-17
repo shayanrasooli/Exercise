@@ -19,6 +19,24 @@ def show_menu():
         else:
             print("Invalid Input. Try again!\n")
 
+def show_all_tasks(tasks):
+    print("="*32)
+    print("        TASK LIST")
+    print("="*32)
+
+    
+    if not tasks:
+        print("Task list is empty")
+        return
+    else:
+        for task in tasks:
+            print(f"ID: {task["id"]}")
+            print(f"Title: {task["title"]}")
+            print(f"Priority: {task["priority"]}")
+            print(f"Status: {task["done"]}")
+            print("-"*30)
+        print(f"Total Task: {len(tasks)}")
+     
 
 
 def add_task():
@@ -55,5 +73,48 @@ def complete_task(tasks):
     if found == False:
         print("task is not found")
         return
+
+
+def delet_task(tasks):
+    task_id= int(input("Enter task ID you want to delet: "))
+    found= False
+    for task in tasks:
+        if task["id"]== task_id:
+            found=True
+            tasks.remove(task)
+            print("Task deleted successfully!")
+            break
     
+    if found == False:
+        print("Task not found!")
+        return
+    for index, task in enumerate(tasks, start=1):
+        task["id"]= index
+
+def show_statistics(tasks):
+    print("="*32)
+    print("        Statistics")
+    print("="*32)
+    print(f"Total Tasks: {len(tasks)}")
+    count=0
+    high_tasks= 0
+    medium_tasks= 0
+    low_tasks= 0
+    for task in tasks:
+        if task["done"]== True:
+            count += 1
+        if task["priority"]== "High":
+            high_tasks += 1
+        if task["priority"]== "Medium":
+            medium_tasks += 1
+        if task["priority"]== "Low":
+            low_tasks += 1
+
+    print(f"Completed Tasks: {count}")
+    print(f"Pending Tasks: {len(tasks) - count}")
+    print("-"*20)
+    print("Priority Statistic")
+    print(f"High: {high_tasks}\nMedium: {medium_tasks}\nLow: {low_tasks}")
+
+
 

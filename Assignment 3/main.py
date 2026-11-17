@@ -2,9 +2,7 @@ import json
 import task_manager
 import file_manager
 
-with open("tasks.json", "r") as file:
-    tasks = json.load(file)
-
+tasks= file_manager.read_file()
 
 while True:
     choice= task_manager.show_menu()
@@ -15,16 +13,23 @@ while True:
         new["done"]= False
         tasks.append(new)
         
-        with open("tasks.json","w") as file:
-            json.dump(tasks, file, indent=4)
+        file_manager.rewrite(tasks)
     
     elif choice == "2":
-        file_manager.show_all_tasks(tasks)
+        task_manager.show_all_tasks(tasks)
     
     elif choice == "3":
         task_manager.complete_task(tasks)
-        with open("tasks.json", "w") as file:
-            json.dump(tasks, file, indent=4)
+        file_manager.rewrite(tasks)
+
+    elif choice == "4":
+        task_manager.delet_task(tasks)
+        file_manager.rewrite(tasks)
+
+    elif choice == "5":
+        task_manager.show_statistics(tasks)
 
     elif choice == "6":
+        print("Goodbye!")
+        print("See you next time.")
         break

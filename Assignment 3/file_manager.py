@@ -1,18 +1,13 @@
-def show_all_tasks(tasks):
-    print("="*32)
-    print("        TASK LIST")
-    print("="*32)
+import json
 
-    
-    if not tasks:
-        print("Task list is empty")
-        return
-    else:
-        for task in tasks:
-            print(f"ID: {task["id"]}")
-            print(f"Title: {task["title"]}")
-            print(f"Priority: {task["priority"]}")
-            print(f"Status: {task["done"]}")
-            print("-"*30)
-        print(f"Total Task: {len(tasks)}")
-     
+def read_file():
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks= []
+    return tasks
+
+def rewrite(tasks):
+    with open("tasks.json","w") as file:
+            json.dump(tasks, file, indent=4)
